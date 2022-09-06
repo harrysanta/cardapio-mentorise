@@ -1,4 +1,5 @@
 <template>
+
   <div class="container">
     <div class="container-resume" >
       <h1>Cardápio</h1>
@@ -12,7 +13,7 @@
         <div class="delivery-content">
           <span>Taxa de Entrega</span>
           <span>
-            R$ {{ resume.delivery.toFixed(2)}}
+            R$ {{ deliveryTax.toFixed(2)}}
           </span>
         </div>
         <div class="total-content">
@@ -23,26 +24,31 @@
         </div>
       </div>
     </div>
+
     <div class="container-menu">
       <h1 class="h1Menu">Menu</h1>
         <ul class="list-group" v-for="product in products" v-bind:key="product.name">
             <li class="list-group-item">
-            <span>
+            <span class="span-list">
               {{ product.name }}
             </span>
-            <span>
-              Qtd: {{ product.qtd }}
-            </span>
-            <span> 
+            <div class="qtd-container">
+              <span>
+              Qtd:
+              </span>
+              <input v-on:change="addToCart($event, product.name)" placeholder="Quantidade" type="number" min="0" name="add-to-cart" class="inputQtd"/>
+            </div>
+            <span class="span-list"> 
               R$ {{ product.price.toFixed(2) }}
             </span>
-            <span>
+            <span class="span-list">
               R$ {{ product.sum.toFixed(2) }}
             </span>
             </li>
-          <input v-on:change="addToCart($event, product.name)" placeholder="Quantidade" type="number" min="0" name="add-to-cart" class="inputQtd">
+          
         </ul>
     <button @click="showModal = true" class="button">Confirmar Compra</button>
+
     </div> 
 </div>
 
@@ -64,11 +70,13 @@ export default {
       
       qtdTotalProducts: 0,
       total: 0,
-      
-      resume: {
-        delivery: 10,
-      },
+      deliveryTax: 10,
 
+      discount:{
+        value: 0,
+        couponCode: 'Harry20',
+      },
+    
       products: [
         {
           name: "Caipirinha",
@@ -78,7 +86,7 @@ export default {
           sum: 0
         },
         { name: "Churrasco",
-          price: 8,
+          price: 80,
           qtd: 0,
           sum: 0
         },
@@ -90,13 +98,13 @@ export default {
         },
         {
           name: "Pão de Alho",
-          price: 5,
+          price: 10,
           qtd: 0,
           sum: 0
         },
         {
           name: "Maionese",
-          price: 4,
+          price: 10,
           qtd: 0,
           sum: 0
         },
@@ -115,7 +123,7 @@ export default {
       this.products[indexItem].sum = (Number(e.target.value)) * (Number(this.products[indexItem].price));
 
       this.qtdTotalProducts = this.products.map(products => products.qtd).reduce((a, b) => a + b);
-      this.total = this.products.map(products => products.sum).reduce((a, b) => a + b) + (Number(this.resume.delivery));
+      this.total = this.products.map(products => products.sum).reduce((a, b) => a + b) + (Number(this.deliveryTax));
 
     },
     confirmBuy(){
@@ -125,7 +133,6 @@ export default {
     closeModal(){
       this.showModal = false
     },
-
 }}
 </script>
 
@@ -191,12 +198,6 @@ export default {
     display: flex;
   }
 
-  .inputQtd {
-    font-size: 15px;
-    height: 20px;
-    margin-left: 24%;
-  }
-
   .button {
     margin-bottom: 30px;
     margin-top: 15px;
@@ -208,4 +209,31 @@ export default {
     justify-self: left;
     padding-left: 30px;
   }
+
+  .span-list{
+    min-width: 107px;
+  }
+
+  .inputQtd {
+    font-size: 13px;
+    height: 25px;
+    margin-left: 29%;
+    width: 95px;
+    /* margin-top: -3px; */
+    position: relative;
+    top: 2px;
+  }
+
+  .qtd-container{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 5px;
+  }
+
+  .qtd-container span{
+    min-width: 10px;
+  }
 </style>
+
